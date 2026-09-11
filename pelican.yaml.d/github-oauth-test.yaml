@@ -1,0 +1,46 @@
+ConfigBase: /opt/pfed/config
+RuntimeDir: /opt/pfed/run
+TLSSkipVerify: true
+
+Logging:
+  Level: debug
+
+Server:
+  Hostname: localhost
+  WebPort: 8444
+  ExternalWebUrl: https://localhost:8444
+  EnableUI: true
+  DbLocation: /opt/pfed/data/server.sqlite
+  UIAdminUsers: ["<admin_username>""]
+
+OIDC:
+  ClientID: <your_client_id>
+  ClientSecretFile: /path/to/client_secret
+
+Origin:
+  Port: 8443
+  RunLocation: /opt/pfed/run/xrd
+  StorageType: posix
+  EnableCmsd: false
+  EnableVoms: false
+  EnableOIDC: true
+  EnableIssuer: true
+  DbLocation: /opt/pfed/data/origin.sqlite
+  Exports:
+    - StoragePrefix: /opt/pfed/export
+      FederationPrefix: /my-test
+      Capabilities: ["Reads", "Listings", "DirectReads"]
+
+Issuer:
+  GroupSource: github
+  GroupRequirements: ["<allowed_group>"]
+  AuthorizationTemplates:
+    - actions: ["read", "create", "modify"]
+      prefix: "/"
+      groups: ["<particular_group>"]
+
+Director:
+  DbLocation: /opt/pfed/data/director.sqlite
+
+Registry:
+  DbLocation: /opt/pfed/data/registry.sqlite
