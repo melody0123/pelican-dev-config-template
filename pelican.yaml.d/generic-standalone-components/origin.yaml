@@ -1,0 +1,34 @@
+TLSSkipVerify: true
+
+# See director.yaml for why the root-hardcoded paths are pinned explicitly.
+# Origin.RunLocation is left at its default (/run/pelican/xrootd/origin): that
+# path is already unique to the origin component, and it must be chown'ed to
+# the xrootd user, which is safest on a native filesystem.
+ConfigBase: /workspaces/pelican/pfed/srv/origin/config
+RuntimeDir: /workspaces/pelican/pfed/srv/origin/run
+
+Logging:
+  Level: debug
+
+Server:
+  Hostname: pelican-dev
+  WebPort: 8444
+  EnableUI: true
+  DbLocation: /workspaces/pelican/pfed/srv/origin/data/pelican.sqlite
+  DatabaseBackup:
+    Location: /workspaces/pelican/pfed/srv/origin/data/backups
+
+Monitoring:
+  DataLocation: /workspaces/pelican/pfed/srv/origin/data/monitoring
+
+Federation:
+  DiscoveryUrl: https://pelican-dev:8441
+
+Origin:
+  StorageType: posix
+  Port: 8443
+  DbLocation: /workspaces/pelican/pfed/srv/origin/data/origin.sqlite
+  Exports:
+    - StoragePrefix: /workspaces/pelican/pfed/srv/export
+      FederationPrefix: /my-test
+      Capabilities: ["PublicReads", "Reads", "Listings", "DirectReads"]

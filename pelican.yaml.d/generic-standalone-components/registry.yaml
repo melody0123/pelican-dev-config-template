@@ -1,0 +1,22 @@
+TLSSkipVerify: true
+
+# See director.yaml for why the root-hardcoded paths are pinned explicitly.
+ConfigBase: /workspaces/pelican/pfed/srv/registry/config
+RuntimeDir: /workspaces/pelican/pfed/srv/registry/run
+
+Logging:
+  Level: debug
+
+Server:
+  Hostname: pelican-dev
+  WebPort: 8442
+  EnableUI: true
+  DbLocation: /workspaces/pelican/pfed/srv/registry/data/pelican.sqlite
+  DatabaseBackup:
+    Location: /workspaces/pelican/pfed/srv/registry/data/backups
+
+Monitoring:
+  DataLocation: /workspaces/pelican/pfed/srv/registry/data/monitoring
+
+Federation:
+  DirectorUrl: https://pelican-dev:8441

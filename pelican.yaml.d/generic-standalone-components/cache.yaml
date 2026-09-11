@@ -1,0 +1,29 @@
+TLSSkipVerify: true
+
+# See director.yaml for why the root-hardcoded paths are pinned explicitly.
+# Cache.StorageLocation and Cache.RunLocation are left at their defaults
+# (/run/pelican/cache and /run/pelican/xrootd/cache): both are unique to the
+# cache component, and they must be chown'ed to the xrootd user.
+ConfigBase: /workspaces/pelican/pfed/srv/cache/config
+RuntimeDir: /workspaces/pelican/pfed/srv/cache/run
+
+Logging:
+  Level: debug
+
+Server:
+  Hostname: pelican-dev
+  WebPort: 8445
+  EnableUI: true
+  DbLocation: /workspaces/pelican/pfed/srv/cache/data/pelican.sqlite
+  DatabaseBackup:
+    Location: /workspaces/pelican/pfed/srv/cache/data/backups
+
+Monitoring:
+  DataLocation: /workspaces/pelican/pfed/srv/cache/data/monitoring
+
+Federation:
+  DiscoveryUrl: https://pelican-dev:8441
+
+Cache:
+  # Default is 8442, which collides with the registry's web port.
+  Port: 8446
