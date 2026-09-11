@@ -37,15 +37,16 @@
 			]
 		}
 	},
-	"postCreateCommand": "go install github.com/go-delve/delve/cmd/dlv@latest",
+	"postCreateCommand": "bash .devcontainer/setup.sh",
 	"remoteEnv": {
 		"GOPATH": "/home/vscode/go",
-		"PATH": "/usr/local/go/bin:/home/vscode/go/bin:${containerEnv:PATH}"
+		"PATH": "/usr/local/go/bin:/home/vscode/go/bin:${containerEnv:PATH}",
+		"CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
 	},
 	"remoteUser": "vscode",
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
-			"installZsh": false,
+			"installZsh": true,
 			"installOhMyZsh": false,
 			"username": "vscode",
 			"userUid": "automatic",
@@ -57,5 +58,5 @@
 		}
 	},
 	"runArgs": [ "--hostname", "pelican-dev" ],
-	"mounts": [ "type=volume,source=claude-code-config,target=/root/.claude" ]
+	"mounts": [ "type=volume,source=claude-code-config,target=/home/vscode/.claude" ]
 }
