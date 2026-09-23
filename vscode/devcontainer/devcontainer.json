@@ -57,6 +57,6 @@
 			"version": "latest"
 		}
 	},
-	"runArgs": [ "--hostname", "pelican-dev" ],
+	"runArgs": [ "--hostname", "pelican-dev", "--umask", "0022" ],
 	"mounts": [ "type=volume,source=claude-code-config,target=/home/vscode/.claude" ]
 }
