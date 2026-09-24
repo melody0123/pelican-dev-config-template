@@ -1,0 +1,52 @@
+TLSSkipVerify: true
+
+# See director.yaml for why the root-hardcoded paths are pinned explicitly.
+# Origin.RunLocation is left at its default (/run/pelican/xrootd/origin): that
+# path is already unique to the origin component, and it must be chown'ed to
+# the xrootd user, which is safest on a native filesystem.
+ConfigBase: /workspaces/pelican/pfed/srv/origin/config
+RuntimeDir: /workspaces/pelican/pfed/srv/origin/run
+
+Logging:
+  Level: debug
+
+Server:
+  # All four services share one CA so that XRootD (which ignores TLSSkipVerify)
+  # can verify the other services' certificates.
+  TLSCACertificateFile: /workspaces/pelican/pfed/srv/shared-ca/tlsca.pem
+  TLSCAKey: /workspaces/pelican/pfed/srv/shared-ca/tlsca.key
+  Hostname: localhost
+  WebPort: 8444
+  EnableUI: true
+  DbLocation: /workspaces/pelican/pfed/srv/origin/data/pelican.sqlite
+  DatabaseBackup:
+    Location: /workspaces/pelican/pfed/srv/origin/data/backups
+
+OIDC:
+  ClientID: "<your-client-id>"
+  ClientSecretFile: /workspaces/pelican/pfed/srv/origin/config/github-client-secret
+
+Monitoring:
+  DataLocation: /workspaces/pelican/pfed/srv/origin/data/monitoring
+
+Federation:
+  DiscoveryUrl: https://localhost:8441
+
+Origin:
+  StorageType: posix
+  Port: 8443
+  DbLocation: /workspaces/pelican/pfed/srv/origin/data/origin.sqlite
+  EnableOIDC: true
+  EnableIssuer: true
+  Exports:
+    - StoragePrefix: /workspaces/pelican/pfed/srv/export
+      FederationPrefix: /my-test
+      Capabilities: ["Reads", "Listings", "DirectReads"]
+
+Issuer:
+  GroupSource: github
+  GroupRequirements: ["CHTC"]
+  AuthorizationTemplates:
+    - actions: ["read", "create", "modify"]
+      prefix: "/"
+      groups: ["CHTC"]

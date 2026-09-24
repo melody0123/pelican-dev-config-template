@@ -1,0 +1,29 @@
+TLSSkipVerify: true
+
+# Everything this process writes lives under srv/director/. ConfigBase and
+# RuntimeDir cover most derived defaults, but when pelican-server runs as root
+# several paths are hardcoded to /var/lib/pelican and /run/pelican and ignore
+# ConfigBase, so those are pinned explicitly below.
+ConfigBase: /workspaces/pelican/pfed/srv/director/config
+RuntimeDir: /workspaces/pelican/pfed/srv/director/run
+
+Logging:
+  Level: debug
+
+Server:
+  # All four services share one CA so that XRootD (which ignores TLSSkipVerify)
+  # can verify the other services' certificates.
+  TLSCACertificateFile: /workspaces/pelican/pfed/srv/shared-ca/tlsca.pem
+  TLSCAKey: /workspaces/pelican/pfed/srv/shared-ca/tlsca.key
+  Hostname: localhost
+  WebPort: 8441
+  EnableUI: true
+  DbLocation: /workspaces/pelican/pfed/srv/director/data/pelican.sqlite
+  DatabaseBackup:
+    Location: /workspaces/pelican/pfed/srv/director/data/backups
+
+Monitoring:
+  DataLocation: /workspaces/pelican/pfed/srv/director/data/monitoring
+
+Federation:
+  RegistryUrl: https://localhost:8442
