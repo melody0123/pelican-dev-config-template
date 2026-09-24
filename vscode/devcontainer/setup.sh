@@ -16,6 +16,10 @@ zstyle ':vcs_info:git:*' actionformats ' (%F{red}%b|%a%f)'
 setopt PROMPT_SUBST
 PROMPT='%(?..%F{red}[%?]%f )%F{green}%n%f ➜ %F{blue}%~%f${vcs_info_msg_0_} '
 
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+
 alias ls='ls --color=auto'
 alias ll='ls -al'
 EOF
