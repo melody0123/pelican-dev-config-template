@@ -7,21 +7,22 @@ set -xeuo pipefail
 cd "$(dirname "$0")"
 
 BIN=../dist/pelican-server_linux_arm64_v8.0/pelican-server
+TIME="$(date +%Y%m%d-%H%M%S)"
 
 for svc in director registry origin cache; do
   mkdir -p "srv/$svc/config" "srv/$svc/run" "srv/$svc/data"
 done
 mkdir -p srv/export
-mkdir -p logs
+mkdir -p logs/"$TIME"
 
 if [ "${1:-}" = "--mkdir-only" ]; then
     exit $?
 fi
 
-nohup "$BIN" director serve --config director.yaml > logs/director-"$(date +%Y%m%d-%H%M%S)".log 2>&1 &
+nohup "$BIN" director serve --config director.yaml > logs/"$TIME"/director.log 2>&1 &
 sleep 10
-nohup "$BIN" registry serve --config registry.yaml > logs/registry-"$(date +%Y%m%d-%H%M%S)".log 2>&1 &
+nohup "$BIN" registry serve --config registry.yaml > logs/"$TIME"/registry.log 2>&1 &
 sleep 10
-nohup "$BIN" origin   serve --config origin.yaml   > logs/origin-"$(date +%Y%m%d-%H%M%S)".log   2>&1 &
+nohup "$BIN" origin   serve --config origin.yaml   > logs/"$TIME"/origin.log   2>&1 &
 sleep 10
-nohup "$BIN" cache    serve --config cache.yaml    > logs/cache-"$(date +%Y%m%d-%H%M%S)".log    2>&1 &
+nohup "$BIN" cache    serve --config cache.yaml    > logs/"$TIME"/cache.log    2>&1 &
