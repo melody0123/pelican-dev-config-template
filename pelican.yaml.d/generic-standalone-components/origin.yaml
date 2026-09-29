@@ -11,7 +11,11 @@ Logging:
   Level: debug
 
 Server:
-  Hostname: pelican-dev
+  # All four services share one CA so that XRootD (which ignores TLSSkipVerify)
+  # can verify the other services' certificates.
+  TLSCACertificateFile: /workspaces/pelican/pfed/srv/shared-ca/tlsca.pem
+  TLSCAKey: /workspaces/pelican/pfed/srv/shared-ca/tlsca.key
+  Hostname: localhost
   WebPort: 8444
   EnableUI: true
   DbLocation: /workspaces/pelican/pfed/srv/origin/data/pelican.sqlite
@@ -22,13 +26,26 @@ Monitoring:
   DataLocation: /workspaces/pelican/pfed/srv/origin/data/monitoring
 
 Federation:
-  DiscoveryUrl: https://pelican-dev:8441
+  DiscoveryUrl: https://localhost:8441
+
+# OIDC:
+#   ClientIDFile: /workspaces/pelican/pfed/srv/origin/config/oidc-client-id
+#   ClientSecretFile: /workspaces/pelican/pfed/srv/origin/config/oidc-client-secret
 
 Origin:
   StorageType: posix
   Port: 8443
   DbLocation: /workspaces/pelican/pfed/srv/origin/data/origin.sqlite
+  EnableOIDC: false
+  EnableIssuer: true
+  IssuerMode: embedded
   Exports:
     - StoragePrefix: /workspaces/pelican/pfed/srv/export
       FederationPrefix: /my-test
-      Capabilities: ["PublicReads", "Reads", "Listings", "DirectReads"]
+      Capabilities: ["Reads", "Writes", "Listings", "DirectReads"]
+
+Issuer:
+  GroupSource: none
+  AuthorizationTemplates:
+    - actions: ["read", "create", "modify"]
+      prefix: "/"

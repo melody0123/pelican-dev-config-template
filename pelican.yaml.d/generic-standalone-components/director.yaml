@@ -11,7 +11,11 @@ Logging:
   Level: debug
 
 Server:
-  Hostname: pelican-dev
+  # All four services share one CA so that XRootD (which ignores TLSSkipVerify)
+  # can verify the other services' certificates.
+  TLSCACertificateFile: /workspaces/pelican/pfed/srv/shared-ca/tlsca.pem
+  TLSCAKey: /workspaces/pelican/pfed/srv/shared-ca/tlsca.key
+  Hostname: localhost
   WebPort: 8441
   EnableUI: true
   DbLocation: /workspaces/pelican/pfed/srv/director/data/pelican.sqlite
@@ -22,4 +26,4 @@ Monitoring:
   DataLocation: /workspaces/pelican/pfed/srv/director/data/monitoring
 
 Federation:
-  RegistryUrl: https://pelican-dev:8442
+  RegistryUrl: https://localhost:8442
