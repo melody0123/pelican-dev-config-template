@@ -1,0 +1,32 @@
+{
+  "name": "Pelican (local)",
+  "build": { "dockerfile": "Dockerfile", "context": "." },
+  "workspaceFolder": "/workspaces/pelican",
+  "remoteUser": "vscode",
+  "runArgs": ["--hostname", "pelican-dev", "--userns=keep-id"],
+  "mounts": [
+    "type=volume,source=persist-store,target=/home/vscode/.persist"
+  ],
+  "forwardPorts": [8444, 8443, 8080],
+  "portsAttributes": {
+    "8444": { "label": "Pelican Server", "onAutoForward": "notify" },
+    "8443": { "label": "Pelican Web UI", "onAutoForward": "notify" },
+    "8080": { "label": "Additional Service", "onAutoForward": "silent" }
+  },
+  "remoteEnv": {
+    "GOPATH": "/home/vscode/go",
+    "PATH": "/usr/local/go/bin:/home/vscode/go/bin:/home/vscode/.local/bin:${containerEnv:PATH}",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "postCreateCommand": "bash .devcontainer/local/post_create.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "go.gopath": "/home/vscode/go",
+        "go.goroot": "/usr/local/go",
+        "go.useLanguageServer": true
+      },
+      "extensions": ["golang.go", "redhat.vscode-yaml"]
+    }
+  }
+}
