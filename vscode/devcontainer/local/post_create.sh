@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 
+set -eux
+
+P="$HOME/.persist"
+
 # Create symlinks for files/folders that need to be persistent
-dst=(claude zsh_history gitconfig)
-for d in ${dst[@]}; do
-  rm -rf ~/."$d"
-  ln -sf ~/.persist/"$d" ~/."$d"
+files=( zsh_history gitconfig )
+for f in ${files[@]}; do
+  touch "$P"/"$f"
+  ln -sf "$P"/"$f" ~/."$f"
 done
 
-# Install Claude Code CLI first in case it overwrites ~/.claude 
+folders=( claude )
+for f in ${folders[@]}; do
+  mkdir -p "$P"/"$f"
+  ln -sf "$P"/"$f" ~/."$f"
+done
+
+# Install Claude Code CLI
 curl -fsSL https://claude.ai/install.sh | bash
