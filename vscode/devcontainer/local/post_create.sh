@@ -14,6 +14,7 @@ done
 folders=( claude )
 for f in ${folders[@]}; do
   mkdir -p "$P"/"$f"
+  rm -rf ~/."$f"
   ln -sf "$P"/"$f" ~/."$f"
 done
 
