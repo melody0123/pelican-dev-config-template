@@ -7,7 +7,6 @@
   "mounts": [
     "type=volume,source=persist-store,target=/home/vscode/.persist"
   ],
-  "forwardPorts": [8444, 8443, 8080],
   "portsAttributes": {
     "8444": { "label": "Pelican Server", "onAutoForward": "notify" },
     "8443": { "label": "Pelican Web UI", "onAutoForward": "notify" },
