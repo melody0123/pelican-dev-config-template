@@ -1,4 +1,4 @@
-FROM hub.osg-htc.org/pelican-ci/pelican-dev:latest-itb 
+FROM hub.osg-htc.org/pelican-ci/pelican-dev:latest-itb
 
 # Shell tooling (was installed via sudo in setup.sh)
 RUN dnf install -y fzf zsh zsh-autosuggestions zsh-syntax-highlighting \

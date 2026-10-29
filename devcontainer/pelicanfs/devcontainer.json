@@ -1,0 +1,36 @@
+{
+  "name": "PelicanFS",
+  "build": { "dockerfile": "Dockerfile", "context": "." },
+  "workspaceFolder": "/workspaces/pelicanfs",
+  "remoteUser": "vscode",
+  "runArgs": ["--hostname", "pelican-dev", "--userns=keep-id"],
+  "mounts": [
+    "type=volume,source=persist-store,target=/home/vscode/.persist"
+  ],
+  "portsAttributes": {
+    "8444": { "label": "Pelican Server", "onAutoForward": "notify" },
+    "8443": { "label": "Pelican Web UI", "onAutoForward": "notify" },
+    "8080": { "label": "Additional Service", "onAutoForward": "silent" }
+  },
+  "remoteEnv": {
+    "GOPATH": "/home/vscode/go",
+    "PATH": "/usr/local/go/bin:/home/vscode/go/bin:/home/vscode/.local/bin:${containerEnv:PATH}",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "postCreateCommand": "bash .devcontainer/post_create.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "go.gopath": "/home/vscode/go",
+        "go.goroot": "/usr/local/go",
+        "go.useLanguageServer": true,
+        "python.languageServer": "None",
+        "python.defaultInterpreterPath": "/workspaces/pelicanfs/.venv/bin/python",
+        "python.useEnvironmentsExtension": false,
+        "python.locator": "js",
+        "basedpyright.analysis.diagnosticMode": "openFilesOnly"
+      },
+      "extensions": ["golang.go", "redhat.vscode-yaml", "Anthropic.claude-code", "ms-python.python", "detachhead.basedpyright"]
+    }
+  }
+}
