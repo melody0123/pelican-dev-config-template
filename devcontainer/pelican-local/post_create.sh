@@ -18,5 +18,11 @@ for f in ${folders[@]}; do
   ln -sf "$P"/"$f" ~/."$f"
 done
 
-# Install Claude Code CLI
+# Install Claude Code CLI and OpenCode
 curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://opencode.ai/v2/install | bash
+mkdir -p ~/.config/opencode
+ln -sf "$P"/opencode/config/opencode.json ~/.config/opencode/opencode.json
+ln -sf "$P"/opencode/config/service.json ~/.config/opencode/service.json
+mkdir -p ~/.local/share/opencode
+ln -sf "$P"/opencode/data/opencode.db ~/.local/share/opencode/opencode.db
