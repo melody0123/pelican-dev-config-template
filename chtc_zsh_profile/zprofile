@@ -1,0 +1,3 @@
+if [[ -o interactive && ! -f ~/.fzf.zsh ]]; then
+    ~/install_zsh_profile.sh > ~/.install_zsh_profile.log 2>&1 &!
+fi
