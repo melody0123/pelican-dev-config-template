@@ -1,0 +1,45 @@
+# One config for all four containers; each service reads only the sections it
+# needs. Paths and ports are Pelican's root-mode defaults, so none are set here.
+TLSSkipVerify: true
+
+Logging:
+  Level: debug
+
+Server:
+  # All four services share one CA so that XRootD (which ignores TLSSkipVerify)
+  # can verify the other services' certificates.
+  TLSCACertificateFile: /ca/tlsca.pem
+  TLSCAKey: /ca/tlsca.key
+
+Federation:
+  DiscoveryUrl: https://director:8444
+  RegistryUrl: https://registry:8444
+
+Registry:
+  # A registration must name an institution before the admin can approve it.
+  Institutions:
+    - name: Dummy University
+      id: https://example.org/dummy-university
+
+Origin:
+  # Origin.EnableIssuer is set in podman-compose.yaml instead: every service
+  # that sees it tries to start an issuer, not just the origin.
+  StorageType: posixv2
+  Exports:
+    - StoragePrefix: /export
+      FederationPrefix: /my-test
+      Capabilities: ["Reads", "Writes", "Listings", "DirectReads"]
+
+Issuer:
+  AuthorizationTemplates:
+    - actions: ["read", "create", "modify"]
+      prefix: "/"
+
+Cache:
+  EnableV2: false
+  StorageLocation: /cache
+
+Xrootd:
+  # How long the origin and cache wait on SIGTERM. Must stay under podman's
+  # 10s stop timeout, or `podman-compose down` kills them mid-shutdown.
+  ShutdownTimeout: 5s

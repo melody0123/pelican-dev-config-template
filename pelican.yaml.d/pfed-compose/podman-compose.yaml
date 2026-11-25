@@ -1,0 +1,62 @@
+# A four-container Pelican federation running the locally built binaries.
+# Each service runs as root in its own container, so they all keep Pelican's
+# default paths and ports and reach each other by service name.
+x-pelican: &pelican
+  image: hub.osg-htc.org/pelican-ci/pelican-dev:latest-itb
+  volumes:
+    - ../dist/pelican-server_linux_arm64_v8.0/pelican-server:/usr/local/bin/pelican-server:ro
+    - ../dist/pelican_linux_arm64_v8.0/pelican:/usr/local/bin/pelican:ro
+    - ./pelican.yaml:/etc/pelican/pelican.yaml:ro
+    - ./server-web-passwd:/etc/pelican/server-web-passwd:ro # web UI login: admin / pelican-dev
+    - ca:/ca # the shared CA; the director creates it on first start
+    - ./export:/export # the origin's data; the other services ignore it
+  healthcheck:
+    test: curl -kfs https://localhost:8444/api/v1.0/health
+    interval: 5s
+
+services:
+  director:
+    <<: *pelican
+    hostname: director
+    command: pelican-server director serve
+    ports: ["8441:8444"]
+
+  registry:
+    <<: *pelican
+    hostname: registry
+    command: pelican-server registry serve
+    ports: ["8442:8444"]
+    depends_on:
+      director: { condition: service_healthy }
+
+  origin:
+    <<: *pelican
+    hostname: origin
+    command: pelican-server origin serve
+    environment:
+      PELICAN_ORIGIN_ENABLEISSUER: "true" # origin-only, so it can't go in pelican.yaml
+    ports: ["8444:8444"]
+    depends_on: &registry-up
+      registry: { condition: service_healthy }
+
+  cache:
+    <<: *pelican
+    hostname: cache
+    command: pelican-server cache serve
+    ports: ["8445:8444"]
+    depends_on: *registry-up
+
+  # Idles so you can run transfers from inside the network:
+  #   podman-compose exec client pelican object put -t token.txt test.bin pelican://director:8444/my-test/test.bin
+  client:
+    image: hub.osg-htc.org/pelican-ci/pelican-dev:latest-itb
+    hostname: client
+    command: sleep infinity
+    working_dir: /work
+    volumes:
+      - ../dist/pelican_linux_arm64_v8.0/pelican:/usr/local/bin/pelican:ro
+      - ./pelican.yaml:/etc/pelican/pelican.yaml:ro
+      - ./client:/work # put tokens and test files here
+
+volumes:
+  ca:
